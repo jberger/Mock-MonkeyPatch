@@ -13,7 +13,7 @@ sub ORIGINAL;
 
 sub arguments {
   my ($self, $occurance) = @_;
-  return $self->{arguments}[$occurance];
+  return $self->{arguments}[$occurance // 0];
 }
 
 sub method_arguments {
@@ -32,7 +32,8 @@ sub method_arguments {
 sub called { scalar @{$_[0]{arguments}} }
 
 sub patch {
-  my ($class, $symbol, $sub) = @_;
+  my ($class, $symbol, $sub, $opts) = @_;
+  $opts ||= {};
 
   $symbol =~ s/^&//;
 
@@ -42,6 +43,7 @@ sub patch {
   my $self = bless {
     arguments => [],
     original => \&{$symbol},
+    store => $opts->{store_arguments} // 1,
     sub => $sub,
     symbol => $symbol,
   }, ref $class || $class;
@@ -49,7 +51,7 @@ sub patch {
   Scalar::Util::weaken(my $weak = $self);
   _patch $symbol => sub {
     local *ORIGINAL = $weak->{original};
-    push @{ $weak->{arguments} }, [@_];
+    push @{ $weak->{arguments} }, $weak->{store} ? [@_] : undef;
     $sub->(@_);
   };
 
@@ -60,9 +62,11 @@ sub reset { $_[0]{arguments} = []; $_[0] }
 
 sub restore { _patch @{$_[0]}{qw/symbol original/}; $_[0] }
 
+sub store_arguments { @_ == 1 ? $_[0]{store} : do { $_[0]{store} = $_[1]; $_[0] } }
+
 sub DESTROY {
   my $self = shift;
-  return unless defined ${^GLOBAL_PHASE} && ${^GLOBAL_PHASE} eq 'DESTRUCT';
+  return if defined ${^GLOBAL_PHASE} && ${^GLOBAL_PHASE} eq 'DESTRUCT';
   $self->restore;
 }
 
