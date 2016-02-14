@@ -18,6 +18,7 @@ subtest 'basic usage' => sub {
   );
 
   isnt \&Local::Func::func, $orig, 'mock was injected';
+  ok $mock->store_arguments, 'store_arguments defaults to true';
 
   is Local::Func::func(qw/a b c/), 'mock', 'got mocked value';
   is $mock->called, 1, 'mock was called';
@@ -64,7 +65,7 @@ subtest 'only restore once' => sub {
   my $mock = Mock::MonkeyPatch->patch(
     'Local::Func::func' => sub { 'mock' }
   );
-  
+
   isnt \&Local::Func::func, $orig, 'mock was injected';
   $mock->restore;
   is \&Local::Func::func, $orig, 'mock was removed';
@@ -78,6 +79,15 @@ subtest 'only restore once' => sub {
   $mock->restore;
   is \&Local::Func::func, $new, 'new mock is still in place';
   isnt \&Local::Func::func, $orig, 'new mock was not removed';
+};
+
+subtest 'use ORIGINAL' => sub {
+  my $mock = Mock::MonkeyPatch->patch(
+    'Local::Func::func' => sub { Mock::MonkeyPatch::ORIGINAL() }
+  );
+  isnt \&Local::Func::func, $orig, 'mock was injected';
+  is Local::Func::func(), 'orig', 'original function called via mock';
+  ok $mock->called, 'mock was called';
 };
 
 done_testing;
