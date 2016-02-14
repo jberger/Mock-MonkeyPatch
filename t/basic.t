@@ -12,7 +12,7 @@ my $called;
 
 my $orig = \&Local::Func::func;
 
-subtest 'basic usage' => sub {
+subtest 'standard usage' => sub {
   my $mock = Mock::MonkeyPatch->patch(
     'Local::Func::func' => sub { 'mock' }
   );
@@ -102,6 +102,19 @@ subtest 'methods arguments' => sub {
 
   is_deeply $mock->method_arguments(0, 'Local::Func'), [qw/a b c/], 'method_arguments tests ISA with optional class';
   ok !$mock->method_arguments(0, 'Wrong::Class'), 'method_arguments with incorrect ISA returns undef';
+};
+
+subtest 'defined symbol required' => sub {
+  my $symbol = 'Local::Func::doEzNotEXIstZ';
+  my $mock;
+  my $success = eval {
+    $mock = Mock::MonkeyPatch->patch($symbol => sub { 'mock' });
+    1;
+  };
+
+  my $err = "$@";
+  like $@, qr/\QSymbol &$symbol is not already defined/, 'correct error message';
+  ok !$success, 'statement did not succeed';
 };
 
 done_testing;
