@@ -43,7 +43,7 @@ sub patch {
   my $self = bless {
     arguments => [],
     original => \&{$symbol},
-    store => $opts->{store_arguments} // 1,
+    store => exists $opts->{store_arguments} ? $opts->{store_arguments} : 1,
     sub => $sub,
     symbol => $symbol,
   }, ref $class || $class;
