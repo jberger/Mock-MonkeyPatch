@@ -38,5 +38,26 @@ subtest 'basic usage' => sub {
 
 is \&Local::Func::func, $orig, 'mock was removed';
 
+subtest 'store arguments' => sub {
+  my $mock = Mock::MonkeyPatch->patch(
+    'Local::Func::func' => sub { 'mock' }, { store_arguments => 0 }
+  );
+  is $mock->store_arguments, 0, 'constructor arg';
+
+  Local::Func::func(qw/a b c/);
+  is $mock->called, 1, 'mock was called';
+  ok !$mock->arguments, 'passed arguments not stored';
+
+  $mock->store_arguments(1);
+  Local::Func::func(qw/d e f/);
+  is $mock->called, 2, 'mock was called';
+  is_deeply $mock->arguments(1), [qw/d e f/], 'got the passed arguments';
+
+  $mock->store_arguments(0);
+  Local::Func::func(qw/g h i/);
+  is $mock->called, 3, 'mock was called';
+  ok !$mock->arguments(2), 'passed arguments not stored';
+};
+
 done_testing;
 
