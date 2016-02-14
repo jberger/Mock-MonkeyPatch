@@ -51,7 +51,7 @@ sub patch {
   Scalar::Util::weaken(my $weak = $self);
   _patch $symbol => sub {
     local *ORIGINAL = $weak->{original};
-    push @{ $weak->{arguments} }, $weak->{store} ? [@_] : undef;
+    push @{ $weak->{arguments} }, [ $weak->{store} ? @_ : () ];
     $sub->(@_);
   };
 

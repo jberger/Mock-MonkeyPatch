@@ -45,7 +45,7 @@ subtest 'store arguments' => sub {
 
   Local::Func::func(qw/a b c/);
   is $mock->called, 1, 'mock was called';
-  ok !$mock->arguments, 'passed arguments not stored';
+  is_deeply $mock->arguments, [], 'passed arguments not stored';
 
   $mock->store_arguments(1);
   Local::Func::func(qw/d e f/);
@@ -55,7 +55,7 @@ subtest 'store arguments' => sub {
   $mock->store_arguments(0);
   Local::Func::func(qw/g h i/);
   is $mock->called, 3, 'mock was called';
-  ok !$mock->arguments(2), 'passed arguments not stored';
+  is_deeply $mock->arguments(2), [], 'passed arguments not stored';
 
   $mock->restore;
   is \&Local::Func::func, $orig, 'mock was removed';
@@ -86,8 +86,22 @@ subtest 'use ORIGINAL' => sub {
     'Local::Func::func' => sub { Mock::MonkeyPatch::ORIGINAL() }
   );
   isnt \&Local::Func::func, $orig, 'mock was injected';
-  is Local::Func::func(), 'orig', 'original function called via mock';
+  is Local::Func::func(), 'orig', 'original function called via mock (return value)';
+  ok $called, 'original was called via mock (counter)';
   ok $mock->called, 'mock was called';
+};
+
+subtest 'methods arguments' => sub {
+  my $mock = Mock::MonkeyPatch->patch(
+    'Local::Func::func' => sub { 'mock' }
+  );
+  my $inst = bless {}, 'Local::Func';
+  is $inst->func(qw/a b c/), 'mock', 'mock a method call';
+  is_deeply $mock->arguments, [$inst, qw/a b c/], 'standard arguments includes instance';
+  is_deeply $mock->method_arguments, [qw/a b c/], 'method_arguments removes the first parameter';
+
+  is_deeply $mock->method_arguments(0, 'Local::Func'), [qw/a b c/], 'method_arguments tests ISA with optional class';
+  ok !$mock->method_arguments(0, 'Wrong::Class'), 'method_arguments with incorrect ISA returns undef';
 };
 
 done_testing;
