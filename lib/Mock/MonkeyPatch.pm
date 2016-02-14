@@ -46,7 +46,7 @@ sub patch {
     store => exists $opts->{store_arguments} ? $opts->{store_arguments} : 1,
     sub => $sub,
     symbol => $symbol,
-  }, ref $class || $class;
+  }, $class;
 
   Scalar::Util::weaken(my $weak = $self);
   _patch $symbol => sub {
