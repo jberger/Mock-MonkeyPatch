@@ -32,11 +32,9 @@ subtest 'basic usage' => sub {
   $mock->reset;
   ok !$mock->called, 'called is false after reset';
   ok !$mock->arguments(0), 'no arguments available after reset';
-
-  $called = undef; # just in case
 };
 
-is \&Local::Func::func, $orig, 'mock was removed';
+is \&Local::Func::func, $orig, 'mock was removed (DESTROY)';
 
 subtest 'store arguments' => sub {
   my $mock = Mock::MonkeyPatch->patch(
@@ -57,6 +55,29 @@ subtest 'store arguments' => sub {
   Local::Func::func(qw/g h i/);
   is $mock->called, 3, 'mock was called';
   ok !$mock->arguments(2), 'passed arguments not stored';
+
+  $mock->restore;
+  is \&Local::Func::func, $orig, 'mock was removed';
+};
+
+subtest 'only restore once' => sub {
+  my $mock = Mock::MonkeyPatch->patch(
+    'Local::Func::func' => sub { 'mock' }
+  );
+  
+  isnt \&Local::Func::func, $orig, 'mock was injected';
+  $mock->restore;
+  is \&Local::Func::func, $orig, 'mock was removed';
+
+  my $other = Mock::MonkeyPatch->patch(
+    'Local::Func::func' => sub { 'other' }
+  );
+
+  my $new = \&Local::Func::func;
+  isnt $new, $orig, 'new mock was injected';
+  $mock->restore;
+  is \&Local::Func::func, $new, 'new mock is still in place';
+  isnt \&Local::Func::func, $orig, 'new mock was not removed';
 };
 
 done_testing;

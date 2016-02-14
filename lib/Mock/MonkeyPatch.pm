@@ -60,7 +60,13 @@ sub patch {
 
 sub reset { $_[0]{arguments} = []; $_[0] }
 
-sub restore { _patch @{$_[0]}{qw/symbol original/}; $_[0] }
+sub restore {
+  my $self = shift;
+  if (my $orig = delete $self->{original}) {
+    _patch $self->{symbol}, $orig;
+  }
+  return $self;
+}
 
 sub store_arguments { @_ == 1 ? $_[0]{store} : do { $_[0]{store} = $_[1]; $_[0] } }
 
