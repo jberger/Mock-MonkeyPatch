@@ -16,6 +16,8 @@ sub arguments {
   return $self->{arguments}[$occurance // 0];
 }
 
+sub called { scalar @{$_[0]{arguments}} }
+
 sub method_arguments {
   my ($self, $occurance, $type) = @_;
   return undef
@@ -28,8 +30,6 @@ sub method_arguments {
   }
   return \@args;
 }
-
-sub called { scalar @{$_[0]{arguments}} }
 
 sub patch {
   my ($class, $symbol, $sub, $opts) = @_;
@@ -111,16 +111,64 @@ Mock::MonkeyPatch - Monkey patching with test mocking in mind
   my $item = MyApp::build_item('rubber_chicken');
   is $item->id, 'abcd', 'building item calls MyApp::gen_random_id';
   ok $mock->called, 'the mock was indeed called';
-  is_deeply $mock->arguments(0), ['rubber_chicken'], 'the mock was called with expected arguments';
+  is_deeply $mock->arguments, ['rubber_chicken'], 'the mock was called with expected arguments';
+
+=head1 DESCRIPTION
+
+Mocking is a common tool, especially for testing.
+By strategically replacing a subroutine, one can isolate segments (units) of code to test individually.
+When this is done it is important to know that the mocked sub was actually called and with what arguments it was called.
+
+L<Mock::MonkeyPatch> injects a subroutine in the place of an existing one.
+It retuns an object by which you can revisit the manner in which the mocked subroutine was called.
+Further when the object goes out of scope (or when the L</restore> method is called) the original subroutine is replaced.
+
+=head1 CONSTRUCTOR
+
+=head2 patch
+
+=head1 METHODS
+
+=head2 arguments
+
+=head2 called
+
+=head2 method_arguments
+
+=head2 reset
+
+=head2 restore
+
+=head2 store_arguments
 
 =head1 COOKBOOK
 
 =head2 Run code before the original
 
   my $mock = $self->patch($symbol, sub {
-    $sub->(@_);
+    # do some stuff before the original
+    do_mocked_stuff(@_);
+    # then call the original function/method
     Mock::MonkeyPatch::ORIGINAL(@_);
   });
+
+=head1 SEE ALSO
+
+=over
+
+=item *
+
+L<Test::MockObject>
+
+=item *
+
+L<Mock::Quick>
+
+=item *
+
+L<Mock::Sub>
+
+=back
 
 =head1 SOURCE REPOSITORY
 
