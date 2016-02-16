@@ -1,6 +1,7 @@
 Revision history for Perl module Mock-MonkeyPatch
 
-0.02
+0.02 2016-02-16
+  - Fix a spurious warning
 
 0.01 2016-02-16
   - Initial release

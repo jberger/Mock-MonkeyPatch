@@ -117,5 +117,20 @@ subtest 'defined symbol required' => sub {
   ok !$success, 'statement did not succeed';
 };
 
+{
+  package Local::Func;
+  sub one { 1 }
+  sub two { 2 }
+}
+
+subtest 'redefine warnings for ORIGINAL' => sub {
+  my $warn = 0;
+  local $SIG{__WARN__} = sub { $warn++ };
+  my $one = Mock::MonkeyPatch->patch('Local::Func::one' => sub{ });
+  my $two = Mock::MonkeyPatch->patch('Local::Func::two' => sub{ Local::Func::one() });
+  Local::Func::two();
+  ok !$warn, 'no warnings';
+};
+
 done_testing;
 
