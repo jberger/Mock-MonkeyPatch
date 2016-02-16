@@ -123,7 +123,7 @@ By strategically replacing a subroutine, one can isolate segments (units) of cod
 When this is done it is important to know that the mocked sub was actually called and with what arguments it was called.
 
 L<Mock::MonkeyPatch> injects a subroutine in the place of an existing one.
-It retuns an object by which you can revisit the manner in which the mocked subroutine was called.
+It returns an object by which you can revisit the manner in which the mocked subroutine was called.
 Further when the object goes out of scope (or when the L</restore> method is called) the original subroutine is replaced.
 
 =head1 CONSTRUCTOR
