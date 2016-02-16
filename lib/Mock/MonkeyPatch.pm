@@ -6,7 +6,7 @@ sub _patch { *{$_[0]} = $_[1] }
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 $VERSION = eval $VERSION;
 
 use Carp ();
