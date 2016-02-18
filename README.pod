@@ -141,11 +141,25 @@ When used as a setter, it returns the mock instance for chaining if desired.
 
 =head2 Run code before the original
 
+The original version of the mocked function (read: the code that was available via the symbol B<at the time the mock was initiated>)
+is available via the fully qualified symbol C<Mock::MonkeyPatch::ORIGINAL>.
+You can call this in your mock if for example you want to do some setup before calling the function.
+
   my $mock = $self->patch($symbol, sub {
     # do some stuff before the original
     do_mocked_stuff(@_);
     # then call the original function/method
     Mock::MonkeyPatch::ORIGINAL(@_);
+  });
+
+=head2 Using ORIGINAL in a nonblocking environment
+
+Since the C<ORIGINAL> symbol is implemented via C<local> if you want to call it after leaving the scope you need to store a reference to the function in a lexical.
+
+  my $mock = $self->patch($symbol, sub {
+    my @args = @_;
+    my $orig = \&Mock::MonkeyPatch::ORIGINAL;
+    Mojo::IOLoop->timer(1 => sub { $orig->(@args) });
   });
 
 =head1 SEE ALSO
