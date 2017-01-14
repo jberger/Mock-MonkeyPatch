@@ -150,8 +150,8 @@ Currently the optional hashref only accepts one option, an initial value for L</
 
 =head2 arguments
 
-  my $args = $mock->argument;
-  my $args_second_time = $mock->argument(1);
+  my $args = $mock->arguments;
+  my $args_second_time = $mock->arguments(1);
 
 Returns an array reference containing the arguments that were passed to the mocked subroutine (but see also L</store_arguments>).
 Optionally an integer may be passed which designates the call number to fetch arguments in the same manner of indexing an array (zero indexed).
