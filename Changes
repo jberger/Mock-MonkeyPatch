@@ -1,5 +1,8 @@
 Revision history for Perl module Mock-MonkeyPatch
 
+0.04 2016-02-17
+  - Fix documentation typo (preaction)
+
 0.03 2016-02-17
   - Improve compatibility with older perls
 
