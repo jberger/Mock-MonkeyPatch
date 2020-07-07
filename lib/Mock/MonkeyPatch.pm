@@ -1,7 +1,10 @@
 package Mock::MonkeyPatch;
 
 sub _defined { defined &{$_[0]} }
-sub _patch { *{$_[0]} = $_[1] }
+sub _patch {
+  no warnings 'prototype';
+  *{$_[0]} = $_[1]
+}
 
 use strict;
 use warnings;

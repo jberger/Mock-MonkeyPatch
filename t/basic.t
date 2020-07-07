@@ -132,5 +132,17 @@ subtest 'redefine warnings for ORIGINAL' => sub {
   ok !$warn, 'no warnings';
 };
 
+{
+  package Local::Func;
+  sub has_prototype (@) { 1 }
+}
+
+subtest 'no prototype warnings' => sub {
+  my $warn = 0;
+  local $SIG{__WARN__} = sub { $warn++ };
+  my $mock = Mock::MonkeyPatch->patch('Local::Func::has_prototype' => sub{ });
+  ok !$warn, 'no warnings';
+};
+
 done_testing;
 
