@@ -12,7 +12,7 @@ sub _patch {
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '1.00';
 $VERSION = eval $VERSION;
 
 use Carp ();
@@ -286,7 +286,7 @@ Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
 
 =head1 CONTRIBUTORS
 
-=over 
+=over
 
 =item *
 

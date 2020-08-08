@@ -194,7 +194,7 @@ Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
 
 =head1 CONTRIBUTORS
 
-=over 
+=over
 
 =item *
 

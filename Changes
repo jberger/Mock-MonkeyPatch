@@ -1,5 +1,8 @@
 Revision history for Perl module Mock-MonkeyPatch
 
+1.00 2020-08-08
+  - Installed mocks have same prototype as original
+
 0.04 2016-02-17
   - Fix documentation typo (preaction)
 
