@@ -1,7 +1,13 @@
 package Mock::MonkeyPatch;
 
 sub _defined { defined &{$_[0]} }
-sub _patch { *{$_[0]} = $_[1] }
+sub _patch {
+  my $p = prototype \&{$_[0]};
+  if (defined $p) {
+    Sub::Util::set_prototype($p, $_[1]);
+  }
+  *{$_[0]} = $_[1];
+}
 
 use strict;
 use warnings;
@@ -11,6 +17,7 @@ $VERSION = eval $VERSION;
 
 use Carp ();
 use Scalar::Util ();
+use Sub::Util ();
 
 sub ORIGINAL;
 
@@ -145,6 +152,10 @@ This includes munging the arguments passed to the origial (though the actual arg
 For example usage, see L</COOKBOOK>.
 
 Currently the optional hashref only accepts one option, an initial value for L</store_arguments> which is true if not given.
+
+The wrapper will have the same prototype as the mocked function if one exists.
+The replacement need not have any prototype, the arguments received by the wrapper will be passed to the given sub as they were received.
+(If this doesn't make any sense to you, don't worry about it.)
 
 =head1 METHODS
 
