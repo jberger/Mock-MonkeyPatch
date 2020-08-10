@@ -12,12 +12,12 @@ sub _patch {
 use strict;
 use warnings;
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 $VERSION = eval $VERSION;
 
 use Carp ();
 use Scalar::Util ();
-use Sub::Util ();
+use Sub::Util 1.40 ();
 
 sub ORIGINAL;
 
