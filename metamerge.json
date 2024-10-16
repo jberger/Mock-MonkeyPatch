@@ -1,16 +1,16 @@
 {
    "license" : [ "perl_5" ],
    "meta-spec" : {
-      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "url" : "https://metacpan.org/pod/CPAN::Meta::Spec",
       "version" : "2"
    },
    "resources" : {
       "repository" : {
-         "url" : "http://github.com/jberger/Mock-MonkeyPatch"
+         "url" : "https://github.com/jberger/Mock-MonkeyPatch"
       },
       "bugtracker" : {
-         "web" : "http://github.com/jberger/Mock-MonkeyPatch/issues"
+         "web" : "https://github.com/jberger/Mock-MonkeyPatch/issues"
       },
-      "license" : [ "http://dev.perl.org/licenses/" ]
+      "license" : [ "https://dev.perl.org/licenses/" ]
    }
 }
